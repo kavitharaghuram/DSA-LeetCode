@@ -1,31 +1,45 @@
 class Solution {
 public:
- int R, C;
+    void dfs(int r, int c, vector<vector<char>>& board, vector<vector<int>>& vis){
+        int n= board.size();
+        int m=board[0].size();
+        vis[r][c]=1;
+        int dr[]={-1, 0, 1, 0};
+        int dc[]={0, -1, 0,1};
+        for(int i=0; i<4; i++){
+            int nr=r+dr[i];
+            int nc=c+dc[i];
+            if(nr<n && nc<m && nr>=0 && nc>=0 && board[nr][nc]=='O' && !vis[nr][nc]){
+                vis[nr][nc]=1;
+                dfs(nr, nc, board, vis);
+            }
+            
+        }
+    }
     void solve(vector<vector<char>>& board) {
-        R= board.size();
-        C= board[0].size();
-        for(int r=0; r<R; r++){
-            if(board[r][0]=='O')capture(board,r, 0);
-            if(board[r][C-1]=='O')capture(board, r, C-1);
+        int n= board.size();
+        int m=board[0].size();
+        vector<vector<int>> vis(n, vector<int>(m, 0));
+        for(int i=0; i<m; i++){
+            if(!vis[0][i] && board[0][i]=='O'){
+                dfs(0, i, board, vis);
+            }
+            if(!vis[n-1][i] && board[n-1][i]=='O'){
+                dfs(n-1, i, board, vis);
+            }
         }
-        for(int c=0; c<C; c++){
-            if(board[0][c]=='O')capture(board, 0, c);
-            if(board[R-1][c]=='O')capture(board, R-1, c);
+        for(int i=0; i<n; i++){
+            if(!vis[i][0] && board[i][0]=='O'){
+                dfs(i, 0, board, vis);
+            }
+            if(!vis[i][m-1] && board[i][m-1]=='O'){
+                dfs(i, m-1, board, vis);
+            }
         }
-        for(int r=0;r<R; r++){
-            for(int c=0; c<C; c++){
-                if(board[r][c]=='O')board[r][c]='X';
-                else if (board[r][c]=='T')board[r][c]='O';
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(!vis[i][j]&& board[i][j]=='O')board[i][j]='X';
             }
         }
     }
-    void capture(vector<vector<char>>& board, int r, int c){
-        if(r<0 || c<0 || r>= R || c>=C || board[r][c]!='O')return;
-        board[r][c]='T';
-        capture(board, r+1, c);
-        capture(board, r-1, c);
-        capture(board, r, c+1);
-        capture(board, r, c-1);
-    }
-
 };
