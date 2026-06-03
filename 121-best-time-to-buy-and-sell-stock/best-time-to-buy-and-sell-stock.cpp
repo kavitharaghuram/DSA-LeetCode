@@ -2,9 +2,9 @@ class Solution {
 public:
     int maxProfit(vector<int>& prices) {
         int maxProfit=0;
-        int minPrice=INT_MAX;
+        int minPrice= INT_MAX;
         for(int p: prices){
-            if(p<minPrice){
+            if (p<minPrice){
                 minPrice=p;
             }
             int profit= p- minPrice;
