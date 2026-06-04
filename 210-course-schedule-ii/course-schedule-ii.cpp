@@ -1,30 +1,32 @@
 class Solution {
 public:
     vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
-        unordered_map<int, vector<int>> prereq;
-        vector<int> output;
-        for(const auto& pair: prerequisites){
-            prereq[pair[0]].push_back(pair[1]);
+        vector<vector<int>>adj(numCourses);
+        for(auto it: prerequisites){
+            adj[it[1]].push_back(it[0]);
         }
-            unordered_set<int>visit;
-            unordered_set<int>cycle;
-            for(int c=0; c<numCourses; c++){
-                if(!dfs(c, prereq, visit, cycle, output))return {};
-            }
-        return output;
-    }
-    bool dfs(int c, unordered_map<int, vector<int>>&prereq, unordered_set<int> &visit, unordered_set<int> &cycle, vector<int>& output){
-        if(cycle.count(c))return false;
-        if(visit.count(c))return true;
-        cycle.insert(c);
-        if(prereq.count(c)){
-            for(int pre: prereq[c]){
-                if(!dfs(pre, prereq, visit, cycle, output))return false;
+        queue<int>q;
+        vector<int>indegree(numCourses, 0);
+        for(int i=0; i<numCourses; i++){
+            for(auto it: adj[i]){
+                indegree[it]++;
             }
         }
-        cycle.erase(c);
-        visit.insert(c);
-        output.push_back(c);;
-        return true;
+        for(int i=0; i<numCourses; i++){
+            if(indegree[i]==0)q.push(i);
+        }
+        vector<int>topo;
+        while(!q.empty()){
+            int node=q.front();
+            q.pop();
+            topo.push_back(node);
+            for(auto it: adj[node]){
+                indegree[it]--;
+                if(indegree[it]==0)q.push(it);
+            }
+
+        }
+        if(topo.size()!=numCourses)return {};
+        return topo;
     }
 };
