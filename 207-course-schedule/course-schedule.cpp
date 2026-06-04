@@ -1,28 +1,32 @@
 class Solution {
 public:
-unordered_map<int, vector<int>> premap;
-unordered_set<int> visited;
     bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<vector<int>>adj(numCourses);
+        for(auto it: prerequisites){
+            adj[it[1]].push_back(it[0]);
+        }
+        vector<int>indegree(numCourses, 0);
         for(int i=0; i<numCourses; i++){
-            premap[i]={};
+            for(auto it: adj[i]){
+                indegree[it]++;
+            }
         }
-        for(const auto& prereq: prerequisites){
-            premap[prereq[0]].push_back(prereq[1]);
+        queue<int>q;
+        for(int i=0; i<numCourses; i++){
+            if(indegree[i]==0)q.push(i);
         }
-        for(int c=0; c<numCourses; c++){
-            if(!dfs(c))return false;
+        vector<int>topo;
+        while(!q.empty()){
+            int node= q.front();
+            topo.push_back(node);
+            q.pop();
+            for(auto it: adj[node]){
+                indegree[it]--;
+                if(indegree[it]==0)q.push(it);
+            }
+            
         }
-        return true;
-    }
-    bool dfs(int course){
-        if(visited.count(course))return false; //cycle detected
-        if(premap[course].empty())return true;
-        visited.insert(course);
-        for(int pre: premap[course]){
-            if(!dfs(pre))return false;
-        }
-        visited.erase(course);
-        premap[course].clear();
-        return true;
+        if(topo.size()==numCourses)return true;
+        return false;
     }
 };
