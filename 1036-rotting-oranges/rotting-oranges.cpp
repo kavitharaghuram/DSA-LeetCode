@@ -3,8 +3,8 @@ public:
     int orangesRotting(vector<vector<int>>& grid) {
         int n= grid.size();
         int m= grid[0].size();
-        vector<vector<int>>vis(n, vector<int>(m, 0));
         queue<pair<pair<int, int>, int>>q;
+        vector<vector<int>>vis(n, vector<int>(m, 0));
         int countfresh=0;
         for(int i=0; i<n; i++){
             for(int j=0; j<m; j++){
@@ -12,27 +12,26 @@ public:
                     q.push({{i, j}, 0});
                     vis[i][j]=2;
                 }
-                else {
+                else{
                     vis[i][j]=0;
                 }
                 if(grid[i][j]==1)countfresh++;
             }
-
         }
         int time=0;
         int count=0;
         int dr[]={-1, 0, 1, 0};
         int dc[]={0, -1, 0, 1};
         while(!q.empty()){
-            int r = q.front().first.first;
-            int c= q.front().first.second;
-            int t= q.front().second;
+            int r=q.front().first.first;
+            int c=q.front().first.second;
+            int t=q.front().second;
             q.pop();
-            time= max(time, t);
+            time=max(t, time);
             for(int i=0; i<4; i++){
-                int nr= r+dr[i];
+                int nr=r+dr[i];
                 int nc= c+dc[i];
-                if(nr<n && nr>=0 && nc<m && nc>=0 && grid[nr][nc]==1 && vis[nr][nc]!=2 ){
+                if(nr<n && nc<m && nr>=0 && nc>=0 && grid[nr][nc]==1 && vis[nr][nc]!=2){
                     q.push({{nr, nc}, t+1});
                     vis[nr][nc]=2;
                     count++;
